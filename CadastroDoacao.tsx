@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import {
   Button,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
@@ -43,7 +46,14 @@ export default function CadastroDoacao() {
   }
 
   return (
-    <View style={styles.container}>
+  <SafeAreaView
+    style={styles.safeArea}
+    edges={['bottom', 'left', 'right']}
+  >
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <Text style={styles.titulo}>
         Cadastro de Doação
       </Text>
@@ -78,7 +88,8 @@ export default function CadastroDoacao() {
         title="Cadastrar doação"
         onPress={validarDoacao}
       />
-    </View>
+     </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -107,4 +118,9 @@ const styles = StyleSheet.create({
     color: '#C62828',
     marginBottom: 12,
   },
+
+  safeArea: {
+  flex: 1,
+  backgroundColor: '#fff',
+},
 });
