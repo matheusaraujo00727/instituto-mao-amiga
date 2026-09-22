@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
+  Alert,
   Button,
   KeyboardAvoidingView,
   Platform,
@@ -9,6 +10,9 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const CHAVE_DOACAO = '@instituto_mao_amiga:doacao';
 
 export default function CadastroDoacao() {
   const [tipoItem, setTipoItem] = useState('');
@@ -16,7 +20,23 @@ export default function CadastroDoacao() {
   const [pontoDestino, setPontoDestino] = useState('');
   const [erro, setErro] = useState('');
 
-  function validarDoacao() {
+  useEffect(() => {
+    async function carregarDoacao() {
+      const salvo = await AsyncStorage.getItem(CHAVE_DOACAO);
+
+      if (salvo) {
+        const doacao = JSON.parse(salvo);
+
+        setTipoItem(doacao.tipoItem);
+        setQuantidade(doacao.quantidade);
+        setPontoDestino(doacao.pontoDestino);
+      }
+    }
+
+    carregarDoacao();
+  }, []);
+
+  async function validarDoacao() {
     if (tipoItem.trim() === '') {
       setErro('O tipo do item não pode ficar vazio.');
       return;
@@ -42,58 +62,85 @@ export default function CadastroDoacao() {
       return;
     }
 
+    const doacao = {
+      tipoItem: tipoItem.trim(),
+      quantidade: quantidade.trim(),
+      pontoDestino: pontoDestino.trim(),
+    };
+
+    await AsyncStorage.setItem(
+      CHAVE_DOACAO,
+      JSON.stringify(doacao)
+    );
+
     setErro('');
+
+    Alert.alert(
+      'Sucesso',
+      'Doação salva localmente.'
+    );
   }
 
   return (
-  <SafeAreaView
-    style={styles.safeArea}
-    edges={['bottom', 'left', 'right']}
-  >
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <SafeAreaView
+      style={styles.safeArea}
+      edges={['bottom', 'left', 'right']}
     >
-      <Text style={styles.titulo}>
-        Cadastro de Doação
-      </Text>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={
+          Platform.OS === 'ios'
+            ? 'padding'
+            : 'height'
+        }
+      >
+        <Text style={styles.titulo}>
+          Cadastro de Doação
+        </Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Tipo do item"
-        value={tipoItem}
-        onChangeText={setTipoItem}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Tipo do item"
+          value={tipoItem}
+          onChangeText={setTipoItem}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Quantidade"
-        value={quantidade}
-        onChangeText={setQuantidade}
-        keyboardType="numeric"
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Quantidade"
+          value={quantidade}
+          onChangeText={setQuantidade}
+          keyboardType="numeric"
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Ponto de destino"
-        value={pontoDestino}
-        onChangeText={setPontoDestino}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Ponto de destino"
+          value={pontoDestino}
+          onChangeText={setPontoDestino}
+        />
 
-      {erro !== '' && (
-        <Text style={styles.erro}>{erro}</Text>
-      )}
+        {erro !== '' && (
+          <Text style={styles.erro}>
+            {erro}
+          </Text>
+        )}
 
-      <Button
-        title="Cadastrar doação"
-        onPress={validarDoacao}
-      />
-     </KeyboardAvoidingView>
+        <Button
+          title="Cadastrar doação"
+          onPress={validarDoacao}
+        />
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+
   container: {
     flex: 1,
     padding: 20,
@@ -118,9 +165,4 @@ const styles = StyleSheet.create({
     color: '#C62828',
     marginBottom: 12,
   },
-
-  safeArea: {
-  flex: 1,
-  backgroundColor: '#fff',
-},
 });
