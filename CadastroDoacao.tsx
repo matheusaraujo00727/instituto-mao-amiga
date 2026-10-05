@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
-  Alert,
   Button,
   KeyboardAvoidingView,
   Platform,
@@ -8,33 +7,14 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const CHAVE_DOACAO = '@instituto_mao_amiga:doacao';
+import { salvarDoacao } from './storage/doacoesStorage';
 
 export default function CadastroDoacao() {
   const [tipoItem, setTipoItem] = useState('');
   const [quantidade, setQuantidade] = useState('');
   const [pontoDestino, setPontoDestino] = useState('');
   const [erro, setErro] = useState('');
-
-  useEffect(() => {
-    async function carregarDoacao() {
-      const salvo = await AsyncStorage.getItem(CHAVE_DOACAO);
-
-      if (salvo) {
-        const doacao = JSON.parse(salvo);
-
-        setTipoItem(doacao.tipoItem);
-        setQuantidade(doacao.quantidade);
-        setPontoDestino(doacao.pontoDestino);
-      }
-    }
-
-    carregarDoacao();
-  }, []);
 
   async function validarDoacao() {
     if (tipoItem.trim() === '') {
@@ -62,23 +42,17 @@ export default function CadastroDoacao() {
       return;
     }
 
-    const doacao = {
-      tipoItem: tipoItem.trim(),
-      quantidade: quantidade.trim(),
-      pontoDestino: pontoDestino.trim(),
-    };
-
-    await AsyncStorage.setItem(
-      CHAVE_DOACAO,
-      JSON.stringify(doacao)
-    );
-
     setErro('');
 
-    Alert.alert(
-      'Sucesso',
-      'Doação salva localmente.'
-    );
+    const novaDoacao = {
+      id: Date.now().toString(),
+      tipoItem: tipoItem.trim(),
+      quantidade: quantidadeNumerica,
+      pontoDestino: pontoDestino.trim(),
+      criadoEm: new Date().toISOString(),
+    };
+
+    await salvarDoacao(novaDoacao);
   }
 
   return (
