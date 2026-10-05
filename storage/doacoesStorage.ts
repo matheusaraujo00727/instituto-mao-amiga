@@ -49,3 +49,20 @@ export async function salvarDoacao(
   );
 }
 
+export async function atualizarDoacao(
+  doacaoAtualizada: Doacao
+): Promise<void> {
+  const doacoes = await listarDoacoes();
+
+  const novasDoacoes = doacoes.map((doacao) =>
+    doacao.id === doacaoAtualizada.id
+      ? doacaoAtualizada
+      : doacao
+  );
+
+  await AsyncStorage.setItem(
+    CHAVE_DOACOES,
+    JSON.stringify(novasDoacoes)
+  );
+}
+

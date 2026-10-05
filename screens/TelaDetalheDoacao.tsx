@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   Alert,
   Button,
   SafeAreaView,
   StyleSheet,
   Text,
+  View,
 } from 'react-native';
 
+import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
@@ -17,9 +19,15 @@ import {
 
 type RootStackParamList = {
   HistoricoDoacoes: undefined;
+
   DetalheDoacao: {
     doacaoId: string;
   };
+
+  EditarDoacao: {
+  doacaoId: string;
+};
+
 };
 
 type Props = NativeStackScreenProps<
@@ -35,7 +43,8 @@ export default function TelaDetalheDoacao({
 
   const [doacao, setDoacao] = useState<Doacao | null>(null);
 
-  useEffect(() => {
+  useFocusEffect(
+  useCallback(() => {
     async function carregarDoacao() {
       const doacoes = await listarDoacoes();
 
@@ -47,7 +56,8 @@ export default function TelaDetalheDoacao({
     }
 
     carregarDoacao();
-  }, [doacaoId]);
+  }, [doacaoId])
+);
 
   async function confirmarExclusao() {
     await excluirDoacao(doacaoId);
@@ -103,6 +113,18 @@ export default function TelaDetalheDoacao({
         {new Date(doacao.criadoEm).toLocaleString('pt-BR')}
       </Text>
       
+      <View style={{ height: 20 }} />
+
+      <Button
+       title="Editar Doação"
+       onPress={() =>
+       navigation.navigate('EditarDoacao', {
+       doacaoId: doacaoId,
+     })
+   }
+  />
+
+<View style={{ height: 15 }} />
 
       <Button
         title="Excluir Doação"

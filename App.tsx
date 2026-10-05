@@ -6,13 +6,26 @@ import TelaListaPontos from './screens/TelaListaPontos';
 import TelaDetalhePonto from './screens/TelaDetalhePonto';
 import TelaHistoricoDoacoes from './screens/TelaHistoricoDoacoes';
 import TelaDetalheDoacao from './screens/TelaDetalheDoacao';
+import TelaEditarDoacao from './screens/TelaEditarDoacao';
 
 type RootStackParamList = {
   ListaPontos: undefined;
+
   DetalhePonto: {
     pontoId: string;
   };
+
   CadastroDoacao: undefined;
+
+  HistoricoDoacoes: undefined;
+
+  DetalheDoacao: {
+    doacaoId: string;
+  };
+
+  EditarDoacao: {
+    doacaoId: string;
+  };
 };
 
 const Stack =
@@ -55,6 +68,11 @@ export default function App() {
         <Stack.Screen
          name="DetalheDoacao"
          component={TelaDetalheDoacao}
+        />
+
+        <Stack.Screen
+         name="EditarDoacao"
+         component={TelaEditarDoacao}
         />
 
       </Stack.Navigator>
