@@ -5,6 +5,7 @@ import CadastroDoacao from './CadastroDoacao';
 import TelaListaPontos from './screens/TelaListaPontos';
 import TelaDetalhePonto from './screens/TelaDetalhePonto';
 import TelaHistoricoDoacoes from './screens/TelaHistoricoDoacoes';
+import TelaDetalheDoacao from './screens/TelaDetalheDoacao';
 
 type RootStackParamList = {
   ListaPontos: undefined;
@@ -49,6 +50,11 @@ export default function App() {
         <Stack.Screen
          name="HistoricoDoacoes"
          component={TelaHistoricoDoacoes}
+        />
+
+        <Stack.Screen
+         name="DetalheDoacao"
+         component={TelaDetalheDoacao}
         />
 
       </Stack.Navigator>

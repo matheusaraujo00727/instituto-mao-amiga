@@ -4,15 +4,32 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   Doacao,
   listarDoacoes,
 } from '../storage/doacoesStorage';
 
-export default function TelaHistoricoDoacoes() {
+type RootStackParamList = {
+  HistoricoDoacoes: undefined;
+  DetalheDoacao: {
+    doacaoId: string;
+  };
+};
+
+type Props = NativeStackScreenProps<
+  RootStackParamList,
+  'HistoricoDoacoes'
+>;
+
+export default function TelaHistoricoDoacoes({
+  navigation,
+  }: Props) {
+
   const [doacoes, setDoacoes] = useState<Doacao[]>([]);
 
   useFocusEffect(
@@ -36,20 +53,27 @@ export default function TelaHistoricoDoacoes() {
         data={doacoes}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text style={styles.tipo}>
-              {item.tipoItem}
-            </Text>
+        <TouchableOpacity
+        style={styles.item}
+        onPress={() =>
+        navigation.navigate('DetalheDoacao', {
+        doacaoId: item.id,
+      })
+    }
+  >
+    <Text style={styles.tipo}>
+      {item.tipoItem}
+    </Text>
 
-            <Text>
-              Quantidade: {item.quantidade}
-            </Text>
+    <Text>
+      Quantidade: {item.quantidade}
+    </Text>
 
-            <Text>
-              Destino: {item.pontoDestino}
-            </Text>
-          </View>
-        )}
+    <Text>
+      Destino: {item.pontoDestino}
+    </Text>
+  </TouchableOpacity>
+)}
       />
     </SafeAreaView>
   );

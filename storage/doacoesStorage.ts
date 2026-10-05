@@ -32,4 +32,20 @@ export async function salvarDoacao(
     JSON.stringify(doacoes)
   );
 
+  }
+
+  export async function excluirDoacao(
+  id: string
+): Promise<void> {
+  const doacoes = await listarDoacoes();
+
+  const novasDoacoes = doacoes.filter(
+    (doacao) => doacao.id !== id
+  );
+
+  await AsyncStorage.setItem(
+    CHAVE_DOACOES,
+    JSON.stringify(novasDoacoes)
+  );
 }
+
