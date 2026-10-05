@@ -17,6 +17,7 @@ type RootStackParamList = {
     pontoId: string;
   };
   CadastroDoacao: undefined;
+  HistoricoDoacoes: undefined;
 };
 
 type Props = NativeStackScreenProps<
@@ -39,6 +40,17 @@ export default function TelaListaPontos({
           navigation.navigate('CadastroDoacao')
         }
       />
+
+      <View style={{ height: 15 }} />
+
+      <Button
+  title="Histórico de Doações"
+  onPress={() =>
+    navigation.navigate('HistoricoDoacoes')
+  }
+/>
+
+<View style={{ height: 15 }} />
 
       <View style={{ height: 15 }} />
 

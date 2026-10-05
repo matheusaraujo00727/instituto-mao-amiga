@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CadastroDoacao from './CadastroDoacao';
 import TelaListaPontos from './screens/TelaListaPontos';
 import TelaDetalhePonto from './screens/TelaDetalhePonto';
+import TelaHistoricoDoacoes from './screens/TelaHistoricoDoacoes';
 
 type RootStackParamList = {
   ListaPontos: undefined;
@@ -43,6 +44,11 @@ export default function App() {
           options={{
             title: 'Cadastrar Doação',
           }}
+        />
+
+        <Stack.Screen
+         name="HistoricoDoacoes"
+         component={TelaHistoricoDoacoes}
         />
 
       </Stack.Navigator>
