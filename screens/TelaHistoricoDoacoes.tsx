@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import {
+  Button,
   FlatList,
   SafeAreaView,
   StyleSheet,
@@ -31,6 +32,14 @@ export default function TelaHistoricoDoacoes({
   }: Props) {
 
   const [doacoes, setDoacoes] = useState<Doacao[]>([]);
+  const [filtroTipo, setFiltroTipo] = useState('Todos');
+
+  const tipos = [
+  'Todos',
+  ...Array.from(
+    new Set(doacoes.map((doacao) => doacao.tipoItem))
+  ),
+];
 
   useFocusEffect(
     useCallback(() => {
@@ -43,14 +52,31 @@ export default function TelaHistoricoDoacoes({
     }, [])
   );
 
+  const doacoesFiltradas =
+  filtroTipo === 'Todos'
+    ? doacoes
+    : doacoes.filter(
+        (doacao) => doacao.tipoItem === filtroTipo
+      );
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.titulo}>
         Histórico de Doações
       </Text>
 
+      <View style={styles.filtros}>
+  {tipos.map((tipo) => (
+    <Button
+      key={tipo}
+      title={tipo}
+      onPress={() => setFiltroTipo(tipo)}
+    />
+  ))}
+</View>
+
       <FlatList
-        data={doacoes}
+        data={doacoesFiltradas}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
         <TouchableOpacity
@@ -105,4 +131,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
   },
+
+  filtros: {
+  marginBottom: 15,
+},
+
 });
