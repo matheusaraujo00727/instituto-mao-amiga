@@ -1,12 +1,13 @@
 import { useCallback, useState } from 'react';
 import {
-  Button,
   FlatList,
+  KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -32,14 +33,7 @@ export default function TelaHistoricoDoacoes({
   }: Props) {
 
   const [doacoes, setDoacoes] = useState<Doacao[]>([]);
-  const [filtroTipo, setFiltroTipo] = useState('Todos');
-
-  const tipos = [
-  'Todos',
-  ...Array.from(
-    new Set(doacoes.map((doacao) => doacao.tipoItem))
-  ),
-];
+  const [filtroTipo, setFiltroTipo] = useState('');
 
   useFocusEffect(
     useCallback(() => {
@@ -53,54 +47,64 @@ export default function TelaHistoricoDoacoes({
   );
 
   const doacoesFiltradas =
-  filtroTipo === 'Todos'
+  filtroTipo.trim() === ''
     ? doacoes
-    : doacoes.filter(
-        (doacao) => doacao.tipoItem === filtroTipo
+    : doacoes.filter((doacao) =>
+        doacao.tipoItem
+          .toLowerCase()
+          .includes(filtroTipo.trim().toLowerCase())
       );
 
+      
   return (
     <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+    style={styles.conteudo}
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  >
       <Text style={styles.titulo}>
         Histórico de Doações
       </Text>
 
-      <View style={styles.filtros}>
-  {tipos.map((tipo) => (
-    <Button
-      key={tipo}
-      title={tipo}
-      onPress={() => setFiltroTipo(tipo)}
-    />
-  ))}
-</View>
+      <TextInput
+  style={styles.filtroInput}
+  placeholder="Filtrar por tipo de item"
+  value={filtroTipo}
+  onChangeText={setFiltroTipo}
+/>
 
       <FlatList
-        data={doacoesFiltradas}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-        <TouchableOpacity
-        style={styles.item}
-        onPress={() =>
+  data={doacoesFiltradas}
+  keyExtractor={(item) => item.id}
+  renderItem={({ item }) => (
+    <TouchableOpacity
+      style={styles.item}
+      onPress={() =>
         navigation.navigate('DetalheDoacao', {
-        doacaoId: item.id,
-      })
-    }
-  >
-    <Text style={styles.tipo}>
-      {item.tipoItem}
-    </Text>
+          doacaoId: item.id,
+        })
+      }
+    >
+      <Text style={styles.tipo}>
+        {item.tipoItem}
+      </Text>
 
-    <Text>
-      Quantidade: {item.quantidade}
-    </Text>
+      <Text>
+        Quantidade: {item.quantidade}
+      </Text>
 
-    <Text>
-      Destino: {item.pontoDestino}
+      <Text>
+        Destino: {item.pontoDestino}
+      </Text>
+    </TouchableOpacity>
+  )}
+  ListEmptyComponent={
+    <Text style={styles.mensagemVazia}>
+      Nenhuma doação encontrada para "{filtroTipo}".
     </Text>
-  </TouchableOpacity>
-)}
-      />
+  }
+/>
+</KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -111,6 +115,10 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
+
+  conteudo: {
+  flex: 1,
+},
 
   titulo: {
     fontSize: 24,
@@ -132,8 +140,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 
-  filtros: {
-  marginBottom: 15,
+mensagemVazia: {
+  textAlign: 'center',
+  marginTop: 20,
 },
 
 });
