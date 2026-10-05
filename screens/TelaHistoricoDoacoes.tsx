@@ -161,7 +161,8 @@ export default function TelaHistoricoDoacoes({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingHorizontal: 40,
+    paddingVertical: 20,
     backgroundColor: '#fff',
   },
 
@@ -217,6 +218,7 @@ filtroInput: {
   borderColor: '#ccc',
   borderRadius: 8,
   padding: 10,
+  minHeight: 44,
   marginBottom: 15,
 },
 

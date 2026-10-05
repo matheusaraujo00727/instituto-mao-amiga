@@ -5,6 +5,8 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -108,15 +110,24 @@ export default function TelaEditarDoacao({
   if (!doacao) {
     return (
       <SafeAreaView style={styles.container}>
+         <KeyboardAvoidingView
+    style={styles.conteudo}
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  >
         <Text style={styles.titulo}>
           Doação não encontrada.
         </Text>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView
+    style={styles.conteudo}
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  >
       <Text style={styles.titulo}>
         Editar Doação
       </Text>
@@ -153,6 +164,7 @@ export default function TelaEditarDoacao({
         title="Salvar alterações"
         onPress={salvarAlteracoes}
       />
+       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -182,4 +194,8 @@ const styles = StyleSheet.create({
     color: '#C62828',
     marginBottom: 12,
   },
+
+  conteudo: {
+  flex: 1,
+},
 });
